@@ -8,6 +8,7 @@
 #include <math.h>
 #include<GLFW/glfw3.h>
 #include<glm.hpp>
+#include"objloader.h"
 
 void init(void);
 void display(void);
