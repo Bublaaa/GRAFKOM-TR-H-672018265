@@ -63,7 +63,7 @@ bool loadfile(
         else if (res < 514 | res < 1233) {
             unsigned int posIndex[1], normIndex[1], uvIndex[1];
             int matches = fscanf(file, "   %d.    %d,    %d,    %d\n", &indeks_2[res-514], &posIndex[0], &normIndex[0], &uvIndex[0]);
-            if (matches != 9) {
+            if (matches != 4) {
                 printf("File can't be read by our simple parser : ( Try exporting with other options\n");
                 return false;
             }
