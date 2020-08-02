@@ -23,11 +23,11 @@ bool loadfile(
 ) {
     //temporary
     std::vector< unsigned int > posIndices, normIndices, binormIndices, tgtIndices, uvIndices;
-    std::vector<glm::fvec3> temp_pos;
-    std::vector<glm::fvec3> temp_norm;
-    std::vector<glm::fvec3> temp_binorm;
-    std::vector<glm::fvec3> temp_tgt;
-    std::vector<glm::fvec2> temp_uv;
+    std::vector<glm::vec3> temp_pos;
+    std::vector<glm::vec3> temp_norm;
+    std::vector<glm::vec3> temp_binorm;
+    std::vector<glm::vec3> temp_tgt;
+    std::vector<glm::vec2> temp_uv;
     //buka file
     FILE* file = fopen(path, "r");
     if (file == NULL) {
@@ -38,16 +38,15 @@ bool loadfile(
         int indeks_1[512];
         int indeks_2[718];
         char baris[24];
-        // read the first word of the line
         int res = fscanf(file, "%s", baris);
         if (res == EOF)
-            break; // EOF = End Of File. Quit the loop.
+            break; //
         else if (res < 514) {
-            glm::fvec3 pos;
-            glm::fvec3 norm;
-            glm::fvec3 binorm;
-            glm::fvec3 tgt;
-            glm::fvec2 uv;
+            glm::vec3 pos;
+            glm::vec3 norm;
+            glm::vec3 binorm;
+            glm::vec3 tgt;
+            glm::vec2 uv;
             fscanf(file, "%d. pos:[%f, %f, %f]; norm:[%f, %f, %f]; binorm:[%f, %f, %f]; tgt:[%f, %f, %f]; uv:[%f, %f];\n", 
                 &indeks_1[res-1],
                 &pos.x, &pos.y, &pos.z,
@@ -78,7 +77,6 @@ bool loadfile(
                 out_pos.push_back(vertex);
             }
         }
-        // else : parse lineHeader
         
 };
 
