@@ -1,0 +1,10 @@
+﻿  main.cpp
+C:\Users\ASUS\source\repos\Tugas1\Tugas1\main.cpp(109,31): warning C4305: 'argument': truncation from 'double' to 'GLfloat'
+C:\Users\ASUS\source\repos\Tugas1\Tugas1\main.cpp(113,31): warning C4305: 'argument': truncation from 'double' to 'GLfloat'
+C:\Users\ASUS\source\repos\Tugas1\Tugas1\main.cpp(161,34): warning C4305: 'argument': truncation from 'double' to 'GLfloat'
+  Generating code
+  5 of 10 functions (50.0%) were compiled, the rest were copied from previous compilation.
+    0 functions were new in current compilation
+    0 functions had inline decision re-evaluated but remain unchanged
+  Finished generating code
+  Tugas1.vcxproj -> C:\Users\ASUS\source\repos\Tugas1\x64\Release\Tugas1.exe
