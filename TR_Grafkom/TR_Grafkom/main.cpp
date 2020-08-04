@@ -6,6 +6,7 @@
 float rotasi = 0.0, zoom = 1.0, x_pos = 0.0, y_pos = -1.0, z_pos = 0.0;
 bool pause = false;
 //int is_depth;
+float angle = 0.0f, rx=0.0f;
 void init() {
     glClearColor(0.0, 0.0, 0.0, 0.0);
     glMatrixMode(GL_PROJECTION);
@@ -28,10 +29,8 @@ void kamera() {
     glRotatef(0, 1.0, 0.0, 0.0);//vertikal
     glRotatef(rotasi, 0.0, 1.0, 0.0);//horizontal
 }
-void display(void) {
+void woman(void) {
     float x1, x2, x3, y1, y2, y3, z1, z2, z3;
-    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-    kamera();
     glColor3f(1.0, 1.0, 1.0);
     for (int i = 0; i < 718; i++) 
     {   //titik pertama
@@ -53,23 +52,59 @@ void display(void) {
         glVertex3f(x3, y3, z3);
         glEnd();
     }
-    glutSwapBuffers();
 }
+    
+    void display(void) {
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+    //kamera();
+	glPushMatrix();
+	glTranslatef(0,-0.9,0);
+	glRotatef(angle,rx,angle, 0);
+	woman();
+	glPopMatrix();
+    glutSwapBuffers();
+	glutPostRedisplay();
+}
+
 void ukuran(int lebar, int tinggi) {
     glLoadIdentity();
     glViewport(0, 0, lebar, tinggi);
     //gluPerspective(100.0, lebar / tinggi, 80.0, 500.0);
     //glTranslatef(0.0, -35.0, -250.0);
 }
-void timer(int) {
-    glutPostRedisplay();
-    glutTimerFunc(1000 / 20, timer, 0);
-    if (pause == false) {
-        rotasi -= 4;
-    }
-    else if (pause == true) {
-        rotasi = rotasi;
-    }
+//void timer(int) {
+//    glutPostRedisplay();
+//    glutTimerFunc(1000 / 20, timer, 0);
+//    if (pause == false) {
+//        rotasi -= 4;
+ //   }
+  //  else if (pause == true) {
+ //       rotasi = rotasi;
+ //   }
+//}
+void timer(int){
+glutPostRedisplay();
+glutTimerFunc(1000 / 20, timer, 0);
+angle +=5.0f;
+}
+
+void dumpInfo(void)
+{
+   printf ("Vendor: %s\n", glGetString (GL_VENDOR));
+   printf ("Renderer: %s\n", glGetString (GL_RENDERER));
+   printf ("Version: %s\n", glGetString (GL_VERSION));
+}
+
+void myKeyboard(unsigned char key, int x, int y){  //dihapus kalau tak digunakan
+if(key=='x'){
+rx +=30;
+}
+else if(key=='w'){
+rx -=30;
+}
+else if(key=='s'){
+rx =0;
+}
 }
 void keyboard(unsigned char key, int x, int y) {
     if (key == ' ' && pause == false) {
@@ -87,37 +122,38 @@ void keyboard(unsigned char key, int x, int y) {
     else
     display();
 }
-void arrow_key(int key, int x, int y) {
-    switch (key) {
-    case GLUT_KEY_LEFT:
-        x_pos -= 0.1;
-        break;
-    case GLUT_KEY_RIGHT:
-        x_pos += 0.1;
-        break;
-    case GLUT_KEY_UP:
-        y_pos += 0.1;
-        break;
-    case GLUT_KEY_DOWN:
-        y_pos -= 0.1;
-        break;
-    }
-    display();
-}
+//void arrow_key(int key, int x, int y) {
+//    switch (key) {
+//    case GLUT_KEY_LEFT:
+//        x_pos -= 0.1;
+//        break;
+//    case GLUT_KEY_RIGHT:
+//        x_pos += 0.1;
+//        break;
+//    case GLUT_KEY_UP:
+//        y_pos += 0.1;
+//        break;
+//    case GLUT_KEY_DOWN:
+//        y_pos -= 0.1;
+//        break;
+//    }
+//    display();
+//}
 int main(int argc, char** argv) {
     glutInit(&argc, argv);
     glutInitDisplayMode(GLUT_DOUBLE | GLUT_DEPTH | GLUT_RGBA);
-    glutInitWindowPosition(0, 0);
+    glutInitWindowPosition(100, 50);
     glutInitWindowSize(500, 500);
     glutCreateWindow("TR_Grafkom");
 
     load("Woman1.nfg");
     glutDisplayFunc(display);
     glutReshapeFunc(ukuran);
-    glutKeyboardFunc(keyboard);
-    glutSpecialFunc(arrow_key);
+    glutKeyboardFunc(myKeyboard);
+   // glutSpecialFunc(arrow_key);
     glutTimerFunc(0, timer, 0);
     glutSwapBuffers();
+    dumpInfo();
     init();
     glutMainLoop();
 }
