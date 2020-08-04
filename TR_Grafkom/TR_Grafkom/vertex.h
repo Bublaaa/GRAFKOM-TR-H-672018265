@@ -12,4 +12,4 @@ struct indi
 };
 
 ver* vertex = new ver[512];
-indi* index = new indi[717];
+indi* index = new indi[718];
