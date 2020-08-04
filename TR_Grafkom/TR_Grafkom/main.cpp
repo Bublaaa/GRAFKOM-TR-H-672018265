@@ -3,7 +3,9 @@
 #include <iostream>
 #include "nfgloader.h"
 
-float rotasi = 0.0, zoom = 1.0, x_pos = 0.0, y_pos = -1.0, z_pos = 0.0;
+float x_rot = 0.0, y_rot = 0.0, z_rot = 0.0,
+zoom = 1.0,
+x_pos = 0.0, y_pos = -1.0, z_pos = 0.0;
 bool pause = false;
 //int is_depth;
 void init() {
@@ -25,8 +27,9 @@ void kamera() {
     glTranslatef(x_pos, y_pos, z_pos);
     
     //rotate kamera
-    glRotatef(0, 1.0, 0.0, 0.0);//vertikal
-    glRotatef(rotasi, 0.0, 1.0, 0.0);//horizontal
+    glRotatef(y_rot, 1.0, 0.0, 0.0);
+    glRotatef(x_rot, 0.0, 1.0, 0.0);
+    glRotatef(z_rot, 0.0, 0.0, 1.0);
 }
 void display(void) {
     float x1, x2, x3, y1, y2, y3, z1, z2, z3;
@@ -65,10 +68,10 @@ void timer(int) {
     glutPostRedisplay();
     glutTimerFunc(1000 / 20, timer, 0);
     if (pause == false) {
-        rotasi -= 4;
+        x_rot -= 4;
     }
     else if (pause == true) {
-        rotasi = rotasi;
+        x_rot = x_rot;
     }
 }
 void keyboard(unsigned char key, int x, int y) {
@@ -83,6 +86,30 @@ void keyboard(unsigned char key, int x, int y) {
     }
     else if (key == 'x') {
         zoom -= 0.1;
+    }
+    else if (pause == true) {
+        //sumbu y
+        if (key == 'w') {
+            y_rot += 3;
+        }
+        else if (key == 's') {
+            y_rot -= 3;
+        }
+        //sumbu x
+        else if (key == 'a') {
+            x_rot += 3;
+        }
+        else if (key == 'd') {
+            x_rot -= 3;
+        }
+        //sumbu z
+        else if (key == 'q') {
+            z_rot += 3;
+        }
+        else if (key == 'e') {
+            z_rot -= 3;
+        }
+        else{}
     }
     else
     display();
