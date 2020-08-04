@@ -2,6 +2,7 @@
 #include <GL/freeglut.h>
 #include <iostream>
 #include "nfgloader.h"
+#include "tgaloader.h"
 
 float x_rot = 0.0, y_rot = 0.0, z_rot = 0.0,
 zoom = 1.0,
@@ -25,18 +26,23 @@ void kamera() {
 
     //posisi kamera
     glTranslatef(x_pos, y_pos, z_pos);
-    
+
     //rotate kamera
     glRotatef(y_rot, 1.0, 0.0, 0.0);
     glRotatef(x_rot, 0.0, 1.0, 0.0);
     glRotatef(z_rot, 0.0, 0.0, 1.0);
 }
 void display(void) {
-    float x1, x2, x3, y1, y2, y3, z1, z2, z3;
+    float x1, x2, x3, y1, y2, y3, z1, z2, z3, u1, u2, u3, v1, v2, v3;
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     kamera();
+
+    glEnable(GL_TEXTURE_2D);
+    glBindTexture(GL_TEXTURE_2D, textureID);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
     glColor3f(1.0, 1.0, 1.0);
-    for (int i = 0; i < 718; i++) 
+    for (int i = 0; i < 718; i++)
     {   //titik pertama
         x1 = vertex[index[i].dex1].x;
         x2 = vertex[index[i].dex2].x;
@@ -49,10 +55,21 @@ void display(void) {
         z1 = vertex[index[i].dex1].z;
         z2 = vertex[index[i].dex2].z;
         z3 = vertex[index[i].dex3].z;
+        //titik u
+        u1 = vertex[index[i].dex1].u;
+        u2 = vertex[index[i].dex2].u;
+        u3 = vertex[index[i].dex3].u;
+        //titik u
+        v1 = vertex[index[i].dex1].v;
+        v2 = vertex[index[i].dex2].v;
+        v3 = vertex[index[i].dex3].v;
 
-        glBegin(GL_LINE_LOOP);
+        glBegin(GL_POLYGON);
+        glTexCoord2f(u1, v1);
         glVertex3f(x1, y1, z1);
+        glTexCoord2f(u2, v2);
         glVertex3f(x2, y2, z2);
+        glTexCoord2f(u3, v3);
         glVertex3f(x3, y3, z3);
         glEnd();
     }
@@ -109,10 +126,10 @@ void keyboard(unsigned char key, int x, int y) {
         else if (key == 'e') {
             z_rot -= 3;
         }
-        else{}
+        else {}
     }
     else
-    display();
+        display();
 }
 void arrow_key(int key, int x, int y) {
     switch (key) {
@@ -139,6 +156,7 @@ int main(int argc, char** argv) {
     glutCreateWindow("TR_Grafkom");
 
     load("Woman1.nfg");
+    loadtga("Woman1.tga");
     glutDisplayFunc(display);
     glutReshapeFunc(ukuran);
     glutKeyboardFunc(keyboard);
