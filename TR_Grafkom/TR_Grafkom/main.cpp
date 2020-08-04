@@ -1,138 +1,76 @@
-#include <iostream>
-#include<string>
-#include<fstream>
-#include<sstream>
-#include<algorithm>
-#include <vector>
+#include <stdlib.h>
 #include <GL/freeglut.h>
-#include <math.h>
-#include<GLFW/glfw3.h>
-#include<glm.hpp>
-#include"objloader.h"
+#include <iostream>
+#include "nfgloader.h"
 
-void init(void);
-void display(void);
-void ukuran(int, int);
-void keyboard(unsigned char, int, int);
-void mouse(int, int, int, int);
-void arrow_key(int, int, int);
+float rotasi = 0.0, zoom = 1.0, x_pos = 0.0, y_pos = -1.0, z_pos = 0.0;
 int is_depth;
-
-int main(int argc, char** argv) {
-	glutInit(&argc, argv);
-	glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGB);
-	glutInitWindowSize(1920, 1080);
-	glutInitWindowPosition(0, 0);
-	glutCreateWindow("TR Grafkom");
-	init();
-	glutDisplayFunc(display);
-	glutKeyboardFunc(keyboard);
-	glutSpecialFunc(arrow_key);
-	glutMouseFunc(mouse);
-	glutReshapeFunc(ukuran);
-	glutMainLoop();
-	return 0;
+void init() {
+    glClearColor(0.0, 0.0, 0.0, 0.0);
+    glMatrixMode(GL_PROJECTION);
+    is_depth = 1;
+    glEnable(GL_DEPTH_TEST);
+    glMatrixMode(GL_MODELVIEW);
+    return;
 }
-void init(void) {
-	glClearColor(0.0, 0.0, 0.0, 0.0);
-	glMatrixMode(GL_PROJECTION);
-	is_depth = 1;
-	glEnable(GL_DEPTH_TEST);
-	glMatrixMode(GL_MODELVIEW);
-}
-void ukuran(int lebar, int tinggi) {
-	if (tinggi == 0) tinggi = 1;
-	glLoadIdentity();
-	gluPerspective(100.0, lebar / tinggi, 5.0, 500.0);
-	glTranslatef(0.0, -35.0, -150.0);
+void kamera() {
+    glLoadIdentity();
+    glPushMatrix();
 
+    //zoom kamera
+    glScalef(zoom, zoom, zoom);
+
+    //posisi kamera
+    glTranslatef(x_pos, y_pos, z_pos);
+    
+    //rotate kamera
+    glRotatef(0, 1.0, 0.0, 0.0);//vertikal
+    glRotatef(rotasi, 0.0, 1.0, 0.0);//horizontal
 }
 void display(void) {
-	if (is_depth) {
-		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-	}
-	else
-	{
-		glClear(GL_COLOR_BUFFER_BIT);
-	}
+    float x1, x2, x3, y1, y2, y3, z1, z2, z3;
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+    kamera();
+    glColor3f(1.0, 1.0, 1.0);
+    for (int i = 0; i < 718; i++) 
+    {   //titik pertama
+        x1 = vertex[index[i].dex1].x;
+        x2 = vertex[index[i].dex2].x;
+        x3 = vertex[index[i].dex3].x;
+        //titik kedua
+        y1 = vertex[index[i].dex1].y;
+        y2 = vertex[index[i].dex2].y;
+        y3 = vertex[index[i].dex3].y;
+        //titik ketiga
+        z1 = vertex[index[i].dex1].z;
+        z2 = vertex[index[i].dex2].z;
+        z3 = vertex[index[i].dex3].z;
 
-	glutSwapBuffers();
+        glBegin(GL_LINE_LOOP);
+        glVertex3f(x1, y1, z1);
+        glVertex3f(x2, y2, z2);
+        glVertex3f(x3, y3, z3);
+        glEnd();
+    }
+    glutSwapBuffers();
 }
-void keyboard(unsigned char key, int x, int y) {
+void ukuran(int lebar, int tinggi) {
+    glLoadIdentity();
+    glViewport(0, 0, lebar, tinggi);
+    //gluPerspective(100.0, lebar / tinggi, 80.0, 500.0);
+    //glTranslatef(0.0, -35.0, -250.0);
+}
+int main(int argc, char** argv) {
+    glutInit(&argc, argv);
+    glutInitDisplayMode(GLUT_DOUBLE | GLUT_DEPTH | GLUT_RGBA);
+    glutInitWindowPosition(0, 0);
+    glutInitWindowSize(500, 500);
+    glutCreateWindow("TR_Grafkom");
 
-	switch (key) {
-	case 'w':
-	case 'W':
-		glRotatef(-2.0, 1.0, 0.0, 0.0);
-		break;
-	case 's':
-	case 'S':
-		glRotatef(2.0, 1.0, 0.0, 0.0);
-		break;
-	case 'a':
-	case 'A':
-		glRotatef(-2.0, 0.0, 1.0, 0.0);
-		break;
-	case 'd':
-	case 'D':
-		glRotatef(2.0, 0.0, 1.0, 0.0);
-		break;
-	case 'q':
-	case 'Q':
-		glScalef(1.2, 1.2, 1.2);
-		break;
-	case 'e':
-	case 'E':
-		glScalef(0.8, 0.8, 0.8);
-		break;
-	case 'z':
-	case 'Z':
-		glRotatef(1.0, 0.0, 0.0, 2.0);
-		break;
-	case 'x':
-	case 'X':
-		glRotatef(1.0, 0.0, 0.0, -2.0);
-		break;
-	}
-
-	display();
-}
-void arrow_key(int key, int x, int y) {
-	switch (key) {
-	case GLUT_KEY_LEFT:
-		glTranslatef(-2.0, 0.0, 0.0);
-		break;
-	case GLUT_KEY_RIGHT:
-		glTranslatef(2.0, 0.0, 0.0);
-		break;
-	case GLUT_KEY_UP:
-		glTranslatef(0.0, 2.0, 0.0);
-		break;
-	case GLUT_KEY_DOWN:
-		glTranslatef(0.0, -2.0, 0.0);
-		break;
-	}
-	display();
-}
-void mouse(int button, int a, int x, int y)
-{
-	switch (button)
-	{
-		if (a == GLUT_DOWN || a == GLUT_UP)
-		{
-	case GLUT_LEFT_BUTTON:
-		glRotatef(-2.0, 0.0, 1.0, 0.0);
-		break;
-	case GLUT_RIGHT_BUTTON:
-		glRotatef(2.0, 0.0, 1.0, 0.0);
-		break;
-	case 3:
-		glRotatef(-2.0, 1.0, 0.0, 0.0);
-		break;
-	case 4:
-		glRotatef(2.0, 1.0, 0.0, 0.0);
-		break;
-		}
-	}
-	display();
+    load("Woman1.nfg");
+    glutDisplayFunc(display);
+    glutReshapeFunc(ukuran);
+    glutSwapBuffers();
+    init();
+    glutMainLoop();
 }
