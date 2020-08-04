@@ -4,11 +4,12 @@
 #include "nfgloader.h"
 
 float rotasi = 0.0, zoom = 1.0, x_pos = 0.0, y_pos = -1.0, z_pos = 0.0;
-int is_depth;
+bool pause = false;
+//int is_depth;
 void init() {
     glClearColor(0.0, 0.0, 0.0, 0.0);
     glMatrixMode(GL_PROJECTION);
-    is_depth = 1;
+    //is_depth = 1;
     glEnable(GL_DEPTH_TEST);
     glMatrixMode(GL_MODELVIEW);
     return;
@@ -60,6 +61,49 @@ void ukuran(int lebar, int tinggi) {
     //gluPerspective(100.0, lebar / tinggi, 80.0, 500.0);
     //glTranslatef(0.0, -35.0, -250.0);
 }
+void timer(int) {
+    glutPostRedisplay();
+    glutTimerFunc(1000 / 20, timer, 0);
+    if (pause == false) {
+        rotasi -= 4;
+    }
+    else if (pause == true) {
+        rotasi = rotasi;
+    }
+}
+void keyboard(unsigned char key, int x, int y) {
+    if (key == ' ' && pause == false) {
+        pause = true;
+    }
+    else if (key == ' ' && pause == true) {
+        pause = false;
+    }
+    else if (key == 'z') {
+        zoom += 0.1;
+    }
+    else if (key == 'x') {
+        zoom -= 0.1;
+    }
+    else
+    display();
+}
+void arrow_key(int key, int x, int y) {
+    switch (key) {
+    case GLUT_KEY_LEFT:
+        x_pos -= 0.1;
+        break;
+    case GLUT_KEY_RIGHT:
+        x_pos += 0.1;
+        break;
+    case GLUT_KEY_UP:
+        y_pos += 0.1;
+        break;
+    case GLUT_KEY_DOWN:
+        y_pos -= 0.1;
+        break;
+    }
+    display();
+}
 int main(int argc, char** argv) {
     glutInit(&argc, argv);
     glutInitDisplayMode(GLUT_DOUBLE | GLUT_DEPTH | GLUT_RGBA);
@@ -70,6 +114,9 @@ int main(int argc, char** argv) {
     load("Woman1.nfg");
     glutDisplayFunc(display);
     glutReshapeFunc(ukuran);
+    glutKeyboardFunc(keyboard);
+    glutSpecialFunc(arrow_key);
+    glutTimerFunc(0, timer, 0);
     glutSwapBuffers();
     init();
     glutMainLoop();
