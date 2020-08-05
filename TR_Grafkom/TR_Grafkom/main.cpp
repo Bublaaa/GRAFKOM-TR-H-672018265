@@ -15,6 +15,17 @@ void init() {
     //is_depth = 1;
     glEnable(GL_DEPTH_TEST);
     glMatrixMode(GL_MODELVIEW);
+    GLfloat diffuse[] = { 2.0, 2.0, 2.0, 2.0 };
+    GLfloat shininess[] = { 50.0 };
+    GLfloat position[] = { 1.0, -1.0, -1.0, 0.0 };
+    glShadeModel(GL_SMOOTH);
+    glMaterialfv(GL_FRONT, GL_DIFFUSE, diffuse);
+    glMaterialfv(GL_FRONT, GL_SHININESS, shininess);
+    glLightfv(GL_LIGHT0, GL_POSITION, position);
+
+    glEnable(GL_LIGHTING);
+    glEnable(GL_LIGHT0);
+    glEnable(GL_DEPTH_TEST);
     return;
 }
 void kamera() {
@@ -73,6 +84,7 @@ void display(void) {
         glVertex3f(x3, y3, z3);
         glEnd();
     }
+   
     glutSwapBuffers();
 }
 void ukuran(int lebar, int tinggi) {
