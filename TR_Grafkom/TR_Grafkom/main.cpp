@@ -25,7 +25,7 @@ void init() {
 
     glEnable(GL_LIGHTING);
     glEnable(GL_LIGHT0);
-    glEnable(GL_DEPTH_TEST);
+   
     return;
 }
 void kamera() {
